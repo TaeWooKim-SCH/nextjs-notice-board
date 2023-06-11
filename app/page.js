@@ -6,7 +6,6 @@ export default async function Home() {
   const client = await connectDB;
   const db = client.db("notice-board");
   const result = await db.collection('post').find().toArray();
-  console.log(result);
 
   return (
     <main>
