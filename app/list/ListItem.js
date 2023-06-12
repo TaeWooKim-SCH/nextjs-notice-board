@@ -8,17 +8,27 @@ export default function ListItem({ result }) {
     <>
       {result.map((x, i) => 
           <div className="list-item" key={i}>
-            <Link href={'/detail/' + result[i]._id}>
+            <Link href={'/detail/' + x._id}>
               <h4>{x.title}</h4>
             </Link>
-            <Link href={'/edit/' + result[i]._id}>✏</Link>
-            <span onClick={() => {
-              fetch('/api/test', {
+            <Link href={'/edit/' + x._id}>✏</Link>
+            <span onClick={(e) => {
+              fetch('/api/post/delete', {
                 method: 'POST',
-                body: '데이터'
+                body: JSON.stringify({
+                  id: x._id.toString(),
+                  author: x.author
+                })
               })
-                .then(() => {
-                  console.log(123);
+                .then((data) => data.json())
+                .then((data) => {
+                  if (data === "다른 사용자가 작성한 글입니다.") {
+                    return alert(data);
+                  }
+                  e.target.parentElement.style.opacity = 0
+                  setTimeout(() => {
+                    e.target.parentElement.style.display = 'none'
+                  }, 1000)
                 })
             }}>❌</span>
             <p>1월 1일</p>
