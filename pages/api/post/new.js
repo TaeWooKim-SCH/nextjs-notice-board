@@ -13,6 +13,6 @@ export default async function handler(req, res) {
       return res.status(500).json('너 빈칸 있음');
     }
     const result = await db.collection('post').insertOne(req.body);
-    res.status(200).redirect('/write');
+    res.redirect(302, '/list');
   }
 }
