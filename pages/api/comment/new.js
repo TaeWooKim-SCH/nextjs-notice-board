@@ -5,18 +5,26 @@ import { ObjectId } from "mongodb";
 
 export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions);
-  if (session) {
-    req.body.author = session.user.email;
+  console.log(session);
+  if (!session) {
+    return res.status(500);
   }
-  console.log(req.body);
+
   if (req.method === 'POST') {
     if (req.body.comment === "") {
       return res.status(500).json('너 빈칸 있음');
     }
-    req.body._id = new ObjectId(req.body._id)
+    
+    const data = {
+      content: req.body.comment,
+      parent: new ObjectId(req.body.id),
+      authorEmail: session.user.email,
+      authorName: session.user.name
+    }
     const db = (await connectDB).db("notice-board");
-    const result = await db.collection('comment').insertOne(req.body);
-    console.log(result);
-    res.redirect(302, '/list');
+    const result = await db.collection('comment').insertOne(data);
+
+    res.status(200).json('댓글 추가 완료');
   }
 }
+

@@ -5,7 +5,7 @@ import Comment from "./Comment";
 export default async function Detail({params}) {
     const db = (await connectDB).db("notice-board");
     let result = await db.collection('post').findOne({_id: new ObjectId(params.id)})
-    let commentData = await db.collection('comment').findOne({_id: new ObjectId(params.id)})
+    let commentData = await db.collection('comment').findOne({parent: `${params.id}`})
     console.log(commentData)
     return (
         <div>
